@@ -1,0 +1,201 @@
+-- RaceDay Database Creation Script 
+-- Part 1 of POE
+-- Author: ST10488724
+-- Date: 2024
+-- ============================================
+-- 1. Users Table
+-- ============================================
+CREATE TABLE Users (
+   UserID INT AUTO_INCREMENT PRIMARY KEY,
+   Email VARCHAR(100) NOT NULL UNIQUE,
+   PasswordHash VARCHAR(255) NOT NULL,
+   FirstName VARCHAR(50) NOT NULL,
+   LastName VARCHAR(50) NOT NULL,
+   IDNumber VARCHAR(13) NOT NULL UNIQUE,
+   PhoneNumber VARCHAR(15) NULL,
+   DateOfBirth DATE NULL,
+   Gender VARCHAR(10) NULL CHECK (Gender IN ('Male', 'Female', 'Other')),
+   Role VARCHAR(20) NOT NULL CHECK (Role IN ('Organiser', 'Participant')),
+   IsActive BOOLEAN NOT NULL DEFAULT TRUE,
+   CreatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   UpdatedAt DATETIME NULL
+);
+-- ============================================
+-- 2. Events Table
+-- ============================================
+CREATE TABLE Events (
+   EventID INT AUTO_INCREMENT PRIMARY KEY,
+   OrganiserID INT NOT NULL,
+   EventName VARCHAR(100) NOT NULL,
+   EventDescription TEXT NULL,
+   EventType VARCHAR(20) NOT NULL CHECK (EventType IN ('Running', 'Walking', 'Cycling')),
+   EventDate DATE NOT NULL,
+   RegistrationStartDate DATE NULL,
+   RegistrationEndDate DATE NULL,
+   MaxParticipants INT NULL,
+   EntryFee DECIMAL(10,2) NULL DEFAULT 0.00,
+   Location VARCHAR(200) NULL,
+   City VARCHAR(50) NULL,
+   Province VARCHAR(50) NULL,
+   RouteDetails TEXT NULL,
+   IsActive BOOLEAN NOT NULL DEFAULT TRUE,
+   CreatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   UpdatedAt DATETIME NULL,
+   FOREIGN KEY (OrganiserID) REFERENCES Users(UserID),
+   CHECK (EventDate >= RegistrationStartDate)
+);
+-- ============================================
+-- 3. Categories Table
+-- ============================================
+CREATE TABLE Categories (
+   CategoryID INT AUTO_INCREMENT PRIMARY KEY,
+   EventID INT NOT NULL,
+   CategoryName VARCHAR(50) NOT NULL,
+   Distance DECIMAL(6,2) NOT NULL,
+   AgeGroup VARCHAR(20) NULL,
+   GenderRestriction VARCHAR(10) NULL CHECK (GenderRestriction IN ('Male', 'Female', 'Mixed')),
+   EntryFee DECIMAL(10,2) NULL DEFAULT 0.00,
+   MaxParticipants INT NULL,
+   IsActive BOOLEAN NOT NULL DEFAULT TRUE,
+   CreatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   FOREIGN KEY (EventID) REFERENCES Events(EventID)
+);
+-- ============================================
+-- 4. EventEnrolments Table
+-- ============================================
+CREATE TABLE EventEnrolments (
+   EnrolmentID INT AUTO_INCREMENT PRIMARY KEY,
+   EventID INT NOT NULL,
+   ParticipantID INT NOT NULL,
+   CategoryID INT NOT NULL,
+   EnrolmentDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   RegistrationNumber VARCHAR(50) NOT NULL UNIQUE,
+   IsPaid BOOLEAN NOT NULL DEFAULT FALSE,
+   Status VARCHAR(20) NOT NULL DEFAULT 'Registered'
+       CHECK (Status IN ('Registered', 'Confirmed', 'Cancelled', 'DNS')),
+   CreatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   UpdatedAt DATETIME NULL,
+   FOREIGN KEY (EventID) REFERENCES Events(EventID),
+   FOREIGN KEY (ParticipantID) REFERENCES Users(UserID),
+   FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID),
+   UNIQUE KEY (EventID, ParticipantID)
+);
+-- ============================================
+-- 5. Results Table
+-- ============================================
+CREATE TABLE Results (
+   ResultID INT AUTO_INCREMENT PRIMARY KEY,
+   EnrolmentID INT NOT NULL,
+   ParticipantID INT NOT NULL,
+   EventID INT NOT NULL,
+   CategoryID INT NOT NULL,
+   FinishTime TIME NULL,
+   Position INT NULL,
+   GenderPosition INT NULL,
+   AgeGroupPosition INT NULL,
+   OverallPosition INT NULL,
+   IsDisqualified BOOLEAN NOT NULL DEFAULT FALSE,
+   DisqualificationReason VARCHAR(200) NULL,
+   CreatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   UpdatedAt DATETIME NULL,
+   FOREIGN KEY (EnrolmentID) REFERENCES EventEnrolments(EnrolmentID),
+   FOREIGN KEY (ParticipantID) REFERENCES Users(UserID),
+   FOREIGN KEY (EventID) REFERENCES Events(EventID),
+   FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID),
+   UNIQUE KEY (EnrolmentID)
+);
+-- ============================================
+-- 6. WeatherLogs Table
+-- ============================================
+CREATE TABLE WeatherLogs (
+   WeatherLogID INT AUTO_INCREMENT PRIMARY KEY,
+   EventID INT NOT NULL,
+   ForecastDate DATE NOT NULL,
+   Temperature DECIMAL(4,1) NULL,
+   Condition VARCHAR(50) NULL,
+   WindSpeed DECIMAL(4,1) NULL,
+   WindDirection VARCHAR(20) NULL,
+   Humidity DECIMAL(4,1) NULL,
+   Precipitation DECIMAL(4,2) NULL,
+   CreatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   FOREIGN KEY (EventID) REFERENCES Events(EventID)
+);
+-- ============================================
+-- INDEXES
+-- ============================================
+CREATE INDEX IX_Events_OrganiserID ON Events(OrganiserID);
+CREATE INDEX IX_Events_EventDate ON Events(EventDate);
+CREATE INDEX IX_Events_City ON Events(City);
+CREATE INDEX IX_Categories_EventID ON Categories(EventID);
+CREATE INDEX IX_Enrolments_EventID ON EventEnrolments(EventID);
+CREATE INDEX IX_Enrolments_ParticipantID ON EventEnrolments(ParticipantID);
+CREATE INDEX IX_Enrolments_CategoryID ON EventEnrolments(CategoryID);
+CREATE INDEX IX_Results_EventID ON Results(EventID);
+CREATE INDEX IX_Results_ParticipantID ON Results(ParticipantID);
+CREATE INDEX IX_Results_CategoryID ON Results(CategoryID);
+CREATE INDEX IX_WeatherLogs_EventID ON WeatherLogs(EventID);
+-- ============================================
+-- SEED DATA
+-- ============================================
+-- 2 Organisers
+INSERT INTO Users (Email, PasswordHash, FirstName, LastName, IDNumber, PhoneNumber, DateOfBirth, Gender, Role, IsActive)
+VALUES
+('john.durban@gmail.com', 'hashed_password_1', 'John', 'Durban', '8001015800087', '0821234567', '1980-01-01', 'Male', 'Organiser', TRUE),
+('sarah.capetown@gmail.com', 'hashed_password_2', 'Sarah', 'Capetown', '8505155800088', '0837654321', '1985-05-15', 'Female', 'Organiser', TRUE);
+-- 2 Participants
+INSERT INTO Users (Email, PasswordHash, FirstName, LastName, IDNumber, PhoneNumber, DateOfBirth, Gender, Role, IsActive)
+VALUES
+('mike.soweto@gmail.com', 'hashed_password_3', 'Mike', 'Soweto', '9003035800089', '0829876543', '1990-03-03', 'Male', 'Participant', TRUE),
+('lisa.pmb@gmail.com', 'hashed_password_4', 'Lisa', 'Pietermaritzburg', '9507115800090', '0845678901', '1995-07-11', 'Female', 'Participant', TRUE);
+-- 3 Events
+INSERT INTO Events (OrganiserID, EventName, EventDescription, EventType, EventDate, RegistrationStartDate, RegistrationEndDate, MaxParticipants, EntryFee, Location, City, Province, RouteDetails, IsActive)
+VALUES
+(1, 'Durban Summer Marathon', 'Annual summer marathon along the Durban beachfront', 'Running', '2026-12-15', '2026-10-01', '2026-12-01', 5000, 150.00, 'Durban Beachfront', 'Durban', 'KwaZulu-Natal', '42km route starting at Ushaka Marine, along the beachfront to Umhlanga and back', TRUE),
+(2, 'Cape Town Cycle Tour 2026', 'World''s largest timed cycle race', 'Cycling', '2026-03-14', '2026-01-01', '2026-03-01', 35000, 250.00, 'Cape Town Stadium', 'Cape Town', 'Western Cape', '109km route around the Cape Peninsula', TRUE),
+(1, 'Soweto Marathon', 'Iconic marathon through the streets of Soweto', 'Running', '2026-11-01', '2026-08-01', '2026-10-15', 25000, 180.00, 'Orlando Stadium', 'Soweto', 'Gauteng', '42.2km route starting and ending at Orlando Stadium', TRUE);
+-- Categories for Event 1: Durban Summer Marathon
+INSERT INTO Categories (EventID, CategoryName, Distance, AgeGroup, GenderRestriction, EntryFee, MaxParticipants, IsActive)
+VALUES
+(1, 'Full Marathon', 42.20, 'Open', 'Mixed', 150.00, 2000, TRUE),
+(1, 'Half Marathon', 21.10, 'Open', 'Mixed', 100.00, 1500, TRUE),
+(1, '10km Run', 10.00, 'Open', 'Mixed', 60.00, 1000, TRUE),
+(1, '5km Fun Run', 5.00, 'Open', 'Mixed', 30.00, 500, TRUE);
+-- Categories for Event 2: Cape Town Cycle Tour
+INSERT INTO Categories (EventID, CategoryName, Distance, AgeGroup, GenderRestriction, EntryFee, MaxParticipants, IsActive)
+VALUES
+(2, '109km Elite', 109.00, 'Open', 'Mixed', 250.00, 5000, TRUE),
+(2, '109km Open', 109.00, 'Open', 'Mixed', 250.00, 20000, TRUE),
+(2, '42km Fun Ride', 42.00, 'Open', 'Mixed', 150.00, 5000, TRUE),
+(2, '20km Family Ride', 20.00, 'Open', 'Mixed', 80.00, 5000, TRUE);
+-- Categories for Event 3: Soweto Marathon
+INSERT INTO Categories (EventID, CategoryName, Distance, AgeGroup, GenderRestriction, EntryFee, MaxParticipants, IsActive)
+VALUES
+(3, 'Full Marathon', 42.20, 'Open', 'Mixed', 180.00, 8000, TRUE),
+(3, 'Half Marathon', 21.10, 'Open', 'Mixed', 120.00, 10000, TRUE),
+(3, '10km Run', 10.00, 'Open', 'Mixed', 70.00, 7000, TRUE);
+-- Enrolments
+INSERT INTO EventEnrolments (EventID, ParticipantID, CategoryID, EnrolmentDate, RegistrationNumber, IsPaid, Status)
+VALUES
+(1, 3, 2, NOW(), 'REG-2026-001', TRUE, 'Confirmed'),
+(1, 4, 3, NOW(), 'REG-2026-002', TRUE, 'Confirmed'),
+(2, 3, 5, NOW(), 'REG-2026-003', FALSE, 'Registered'),
+(3, 4, 10, NOW(), 'REG-2026-004', TRUE, 'Confirmed');
+-- Results
+INSERT INTO Results (EnrolmentID, ParticipantID, EventID, CategoryID, FinishTime, Position, GenderPosition, AgeGroupPosition, OverallPosition, IsDisqualified)
+VALUES
+(1, 3, 1, 2, '01:45:30', 15, 12, 5, 15, FALSE),
+(2, 4, 1, 3, '00:52:15', 8, 3, 2, 8, FALSE),
+(4, 4, 3, 10, '03:45:22', 45, 12, 8, 45, FALSE);
+-- Weather Logs
+INSERT INTO WeatherLogs (EventID, ForecastDate, Temperature, Condition, WindSpeed, WindDirection, Humidity, Precipitation)
+VALUES
+(1, '2026-12-15', 24.5, 'Sunny', 12.0, 'NE', 65.0, 0.0),
+(2, '2026-03-14', 22.0, 'Partly Cloudy', 15.0, 'SW', 70.0, 5.0),
+(3, '2026-11-01', 28.0, 'Sunny', 8.0, 'N', 55.0, 0.0);
+-- Verify
+SELECT 'Users' as TableName, * FROM Users;
+SELECT 'Events' as TableName, * FROM Events;
+SELECT 'Categories' as TableName, * FROM Categories;
+SELECT 'EventEnrolments' as TableName, * FROM EventEnrolments;
+SELECT 'Results' as TableName, * FROM Results;
+SELECT 'WeatherLogs' as TableName, * FROM WeatherLogs;

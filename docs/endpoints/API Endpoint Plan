@@ -1,0 +1,87 @@
+# RaceDay - API Endpoint Plan
+## Base URL: `/api`
+---
+## 1. AUTHENTICATION ENDPOINTS
+| HTTP Method | Route | Description | Role Required | Request Body | Expected Response |
+|-------------|-------|-------------|---------------|--------------|-------------------|
+| POST | /auth/register | Register new user | None | `{"email":"string","password":"string","firstName":"string","lastName":"string","idNumber":"string","phoneNumber":"string","dateOfBirth":"date","gender":"string","role":"string"}` | `201 Created` `{"userId":1,"email":"user@email.com","role":"Participant"}` |
+| POST | /auth/login | Login user | None | `{"email":"string","password":"string"}` | `200 OK` `{"token":"jwt_token","userId":1,"email":"user@email.com","role":"Participant"}` |
+| POST | /auth/logout | Logout user | Authenticated | `{}` | `200 OK` `{"message":"Logged out"}` |
+---
+## 2. USER PROFILE ENDPOINTS
+| HTTP Method | Route | Description | Role Required | Request Body | Expected Response |
+|-------------|-------|-------------|---------------|--------------|-------------------|
+| GET | /users/{id} | Get user profile | Authenticated | None | `200 OK` `{"userId":1,"email":"user@email.com","firstName":"John","lastName":"Doe","phoneNumber":"0821234567","role":"Participant"}` |
+| PUT | /users/{id} | Update profile | Authenticated | `{"firstName":"string","lastName":"string","phoneNumber":"string","dateOfBirth":"date"}` | `200 OK` `{"message":"Profile updated","user":{...}}` |
+| GET | /users/{id}/enrolments | Get user enrolments | Participant | None | `200 OK` `[{"enrolmentId":1,"eventName":"Durban Marathon","status":"Confirmed"}]` |
+| GET | /users/{id}/results | Get user results | Participant | None | `200 OK` `[{"resultId":1,"eventName":"Durban Marathon","finishTime":"01:45:30","position":15}]` |
+---
+## 3. EVENT ENDPOINTS
+| HTTP Method | Route | Description | Role Required | Request Body | Expected Response |
+|-------------|-------|-------------|---------------|--------------|-------------------|
+| GET | /events | Get all events | None | None | `200 OK` `[{"eventId":1,"eventName":"Durban Summer Marathon","eventDate":"2026-12-15","city":"Durban"}]` |
+| GET | /events/{id} | Get event by ID | None | None | `200 OK` `{"eventId":1,"eventName":"Durban Summer Marathon","organiserName":"John Durban","categories":[...]}` |
+| POST | /events | Create event | Organiser | `{"eventName":"string","eventType":"string","eventDate":"date","city":"string","province":"string"}` | `201 Created` `{"eventId":1,"message":"Event created"}` |
+| PUT | /events/{id} | Update event | Organiser | `{"eventName":"string","eventDate":"date","city":"string"}` | `200 OK` `{"message":"Event updated"}` |
+| DELETE | /events/{id} | Delete event | Organiser | None | `204 No Content` |
+| GET | /events/{id}/categories | Get event categories | None | None | `200 OK` `[{"categoryId":1,"categoryName":"Full Marathon","distance":42.2}]` |
+| GET | /events/{id}/enrolments | Get event enrolments | Organiser | None | `200 OK` `[{"enrolmentId":1,"participantName":"Mike Soweto","status":"Confirmed"}]` |
+---
+## 4. CATEGORY ENDPOINTS
+| HTTP Method | Route | Description | Role Required | Request Body | Expected Response |
+|-------------|-------|-------------|---------------|--------------|-------------------|
+| GET | /categories | Get all categories | None | None | `200 OK` `[{"categoryId":1,"categoryName":"Full Marathon","distance":42.2}]` |
+| GET | /categories/{id} | Get category by ID | None | None | `200 OK` `{"categoryId":1,"categoryName":"Full Marathon","distance":42.2,"entryFee":150.00}` |
+| POST | /categories | Create category | Organiser | `{"eventId":1,"categoryName":"string","distance":42.2,"entryFee":150.00}` | `201 Created` `{"categoryId":1,"message":"Category created"}` |
+| PUT | /categories/{id} | Update category | Organiser | `{"categoryName":"string","distance":42.2,"entryFee":150.00}` | `200 OK` `{"message":"Category updated"}` |
+| DELETE | /categories/{id} | Delete category | Organiser | None | `204 No Content` |
+---
+## 5. ENROLMENT ENDPOINTS
+| HTTP Method | Route | Description | Role Required | Request Body | Expected Response |
+|-------------|-------|-------------|---------------|--------------|-------------------|
+| GET | /enrolments | Get all enrolments | Organiser | None | `200 OK` `[{"enrolmentId":1,"eventName":"Durban Marathon","participantName":"Mike Soweto"}]` |
+| GET | /enrolments/{id} | Get enrolment by ID | Authenticated | None | `200 OK` `{"enrolmentId":1,"eventId":1,"participantId":3,"status":"Confirmed"}` |
+| POST | /enrolments | Create enrolment | Participant | `{"eventId":1,"categoryId":2,"participantId":3}` | `201 Created` `{"enrolmentId":1,"registrationNumber":"REG-2026-001"}` |
+| PUT | /enrolments/{id} | Update enrolment | Participant/Organiser | `{"status":"Confirmed"}` | `200 OK` `{"message":"Enrolment updated"}` |
+| DELETE | /enrolments/{id} | Cancel enrolment | Participant/Organiser | None | `204 No Content` |
+| GET | /enrolments/events/{id}/count | Get enrolment count | None | None | `200 OK` `{"eventId":1,"totalEnrolments":250,"maxParticipants":5000}` |
+---
+## 6. RESULT ENDPOINTS
+| HTTP Method | Route | Description | Role Required | Request Body | Expected Response |
+|-------------|-------|-------------|---------------|--------------|-------------------|
+| GET | /results | Get all results | Organiser | None | `200 OK` `[{"resultId":1,"participantName":"Mike Soweto","finishTime":"01:45:30"}]` |
+| GET | /results/{id} | Get result by ID | Authenticated | None | `200 OK` `{"resultId":1,"finishTime":"01:45:30","position":15}` |
+| POST | /results | Create result | Organiser | `{"enrolmentId":1,"finishTime":"01:45:30","position":15}` | `201 Created` `{"resultId":1,"message":"Result recorded"}` |
+| PUT | /results/{id} | Update result | Organiser | `{"finishTime":"01:45:30","position":15}` | `200 OK` `{"message":"Result updated"}` |
+| DELETE | /results/{id} | Delete result | Organiser | None | `204 No Content` |
+---
+## 7. WEATHER ENDPOINTS
+| HTTP Method | Route | Description | Role Required | Request Body | Expected Response |
+|-------------|-------|-------------|---------------|--------------|-------------------|
+| GET | /weather/{eventId} | Get weather forecast | None | None | `200 OK` `{"eventId":1,"temperature":24.5,"condition":"Sunny"}` |
+| POST | /weather | Add weather forecast | Organiser | `{"eventId":1,"temperature":24.5,"condition":"Sunny"}` | `201 Created` `{"message":"Weather added"}` |
+| PUT | /weather/{id} | Update weather | Organiser | `{"temperature":24.5,"condition":"Sunny"}` | `200 OK` `{"message":"Weather updated"}` |
+---
+## ENDPOINT STATISTICS
+| Resource | GET | POST | PUT | DELETE | Total |
+|----------|-----|------|-----|--------|-------|
+| Authentication | 0 | 3 | 0 | 0 | 3 |
+| Users | 2 | 0 | 1 | 0 | 3 |
+| Events | 2 | 1 | 1 | 1 | 5 |
+| Categories | 1 | 1 | 1 | 1 | 4 |
+| Enrolments | 3 | 1 | 1 | 1 | 6 |
+| Results | 2 | 1 | 1 | 1 | 5 |
+| Weather | 1 | 1 | 1 | 0 | 3 |
+| **TOTAL** | **11** | **8** | **6** | **4** | **29** |
+## ERROR RESPONSES
+| Status Code | Description |
+|-------------|-------------|
+| 200 OK | Request successful |
+| 201 Created | Resource created |
+| 204 No Content | Resource deleted |
+| 400 Bad Request | Invalid data |
+| 401 Unauthorized | No token |
+| 403 Forbidden | Insufficient permissions |
+| 404 Not Found | Resource not found |
+| 409 Conflict | Resource exists |
+| 500 Server Error | Server error |

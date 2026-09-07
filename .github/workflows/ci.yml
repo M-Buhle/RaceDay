@@ -1,0 +1,73 @@
+name: CI - Validate Repository Structure
+on:
+ push:
+   branches: [ main, develop ]
+ pull_request:
+   branches: [ main ]
+jobs:
+ validate:
+   runs-on: ubuntu-latest
+   steps:
+   - uses: actions/checkout@v3
+   - name: Check for docs folder
+     run: |
+       if [ -d "docs" ]; then
+         echo "✅ docs folder exists"
+       else
+         echo "❌ docs folder not found"
+         exit 1
+       fi
+   - name: Check for ERD file
+     run: |
+       if [ -f "docs/erd/RaceDay_ERD.png" ] || [ -f "docs/erd/RaceDay_ERD.pdf" ]; then
+         echo "✅ ERD file found"
+       else
+         echo "❌ ERD file not found in docs/erd/"
+         exit 1
+       fi
+   - name: Check for API Endpoint Plan
+     run: |
+       if [ -f "docs/endpoints/API_Endpoint_Plan.md" ]; then
+         echo "✅ API Endpoint Plan found"
+       else
+         echo "❌ API Endpoint Plan not found in docs/endpoints/"
+         exit 1
+       fi
+   - name: Check for SQL Script
+     run: |
+       if [ -f "docs/sql/RaceDay_Schema.sql" ]; then
+         echo "✅ SQL Script found"
+       else
+         echo "❌ SQL Script not found in docs/sql/"
+         exit 1
+       fi
+   - name: Check for README
+     run: |
+       if [ -f "README.md" ]; then
+         echo "✅ README.md found"
+       else
+         echo "❌ README.md not found"
+         exit 1
+       fi
+   - name: Verify SQL Syntax (Basic Check)
+     run: |
+       if grep -q "CREATE TABLE" docs/sql/RaceDay_Schema.sql; then
+         echo "✅ SQL contains CREATE TABLE statements"
+       else
+         echo "❌ SQL missing CREATE TABLE statements"
+         exit 1
+       fi
+   - name: Verify Minimum Tables (6+)
+     run: |
+       TABLE_COUNT=$(grep -c "CREATE TABLE" docs/sql/RaceDay_Schema.sql || echo "0")
+       if [ $TABLE_COUNT -ge 6 ]; then
+         echo "✅ Found $TABLE_COUNT tables (minimum 6 required)"
+       else
+         echo "❌ Found only $TABLE_COUNT tables (need at least 6)"
+         exit 1
+       fi
+   - name: Success Message
+     run: |
+       echo "🎉 All validation checks passed!"
+       echo "📁 Repository structure is valid"
+       echo "✅ Part 1 is ready for submission"
