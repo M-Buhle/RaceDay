@@ -1,0 +1,13 @@
+@RaceDayApi_HostAddress = http://localhost:5163
+
+#if (EnableOpenAPI)
+GET {{RaceDayApi_HostAddress}}/openapi/v1.json
+Accept: application/json
+
+###
+#endif
+
+GET {{RaceDayApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
