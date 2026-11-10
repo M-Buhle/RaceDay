@@ -30,4 +30,4 @@ To run the MVC application inside a Docker container:
   `docker run -d -p 8080:8080 -e ApiSettings__BaseUrl="http://host.docker.internal:5000" --name raceday-container raceday-mvc`
 5. Open your browser to: `http://localhost:8080`
 ## Video Presentation
-[Watch the Part 3 Walkthrough Here]
+[Watch the Part 3 Walkthrough Here] https://youtu.be/favNXr-pM64
