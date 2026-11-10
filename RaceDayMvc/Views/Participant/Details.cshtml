@@ -1,0 +1,45 @@
+@{
+   ViewData["Title"] = "Event Details";
+}
+<div class="container mt-4">
+   @if (TempData["Error"] != null)
+   {
+<div class="alert alert-danger">@TempData["Error"]</div>
+   }
+<div class="card shadow">
+<div class="card-header bg-primary text-white">
+<h2>@Model.GetProperty("eventName").GetString()</h2>
+</div>
+<div class="card-body">
+<p><strong>Description:</strong> @Model.GetProperty("eventDescription").GetString()</p>
+<p><strong>Date:</strong> @Model.GetProperty("eventDate").GetDateTime().ToString("dd MMM yyyy")</p>
+<p><strong>Location:</strong> @Model.GetProperty("location").GetString(), @Model.GetProperty("city").GetString()</p>
+<hr />
+<h4>Available Categories</h4>
+           @if (Model.TryGetProperty("categories", out var categories) && categories.GetArrayLength() > 0)
+           {
+<form asp-action="Enrol" method="post">
+<input type="hidden" name="eventId" value="@Model.GetProperty("eventID").GetInt32()" />
+<div class="mb-3">
+<label class="form-label">Select a Category:</label>
+<select name="categoryId" class="form-select" required>
+                           @foreach (var cat in categories.EnumerateArray())
+                           {
+<option value="@cat.GetProperty("categoryID").GetInt32()">
+                                   @cat.GetProperty("categoryName").GetString() - @cat.GetProperty("distance").GetDecimal() km (R @cat.GetProperty("entryFee").GetDecimal())
+</option>
+                           }
+</select>
+</div>
+<button type="submit" class="btn btn-success">Confirm Enrolment</button>
+<a asp-action="Index" class="btn btn-secondary">Back to Events</a>
+</form>
+           }
+           else
+           {
+<div class="alert alert-warning">No categories have been created for this event yet.</div>
+<a asp-action="Index" class="btn btn-secondary">Back to Events</a>
+           }
+</div>
+</div>
+</div>

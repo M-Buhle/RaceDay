@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\Buhle Mputhi\\OneDrive - ADvTECH Ltd\\RaceDay\\RaceDayApi\\RaceDayAPI.Tests\\RaceDayAPI.Tests.csproj": {}
+    "C:\\Users\\Buhle Mputhi\\OneDrive - ADvTECH Ltd\\RaceDay\\RaceDayApi\\RaceDayAPI.Tests\\RaceDayAPI.Tests.csproj": {}
   },
   "projects": {
-    "c:\\Users\\Buhle Mputhi\\OneDrive - ADvTECH Ltd\\RaceDay\\RaceDayApi\\RaceDayAPI.Tests\\RaceDayAPI.Tests.csproj": {
+    "C:\\Users\\Buhle Mputhi\\OneDrive - ADvTECH Ltd\\RaceDay\\RaceDayApi\\RaceDayAPI.Tests\\RaceDayAPI.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\Buhle Mputhi\\OneDrive - ADvTECH Ltd\\RaceDay\\RaceDayApi\\RaceDayAPI.Tests\\RaceDayAPI.Tests.csproj",
+        "projectUniqueName": "C:\\Users\\Buhle Mputhi\\OneDrive - ADvTECH Ltd\\RaceDay\\RaceDayApi\\RaceDayAPI.Tests\\RaceDayAPI.Tests.csproj",
         "projectName": "RaceDayAPI.Tests",
-        "projectPath": "c:\\Users\\Buhle Mputhi\\OneDrive - ADvTECH Ltd\\RaceDay\\RaceDayApi\\RaceDayAPI.Tests\\RaceDayAPI.Tests.csproj",
+        "projectPath": "C:\\Users\\Buhle Mputhi\\OneDrive - ADvTECH Ltd\\RaceDay\\RaceDayApi\\RaceDayAPI.Tests\\RaceDayAPI.Tests.csproj",
         "packagesPath": "C:\\Users\\Buhle Mputhi\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\Buhle Mputhi\\OneDrive - ADvTECH Ltd\\RaceDay\\RaceDayApi\\RaceDayAPI.Tests\\obj\\",
+        "outputPath": "C:\\Users\\Buhle Mputhi\\OneDrive - ADvTECH Ltd\\RaceDay\\RaceDayApi\\RaceDayAPI.Tests\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Buhle Mputhi\\AppData\\Roaming\\NuGet\\NuGet.Config"

@@ -1,0 +1,39 @@
+@{
+   ViewData["Title"] = "Browse Events";
+}
+<div class="container mt-4">
+<div class="d-flex justify-content-between align-items-center mb-4">
+<h1>Upcoming Events</h1>
+<div>
+<input type="text" class="form-control" placeholder="Search events..." />
+</div>
+</div>
+<div class="row">
+       @if (Model == null || Model.Count == 0)
+       {
+<div class="col-12">
+<div class="alert alert-info">No events are currently available. Check back later!</div>
+</div>
+       }
+       else
+       {
+           @foreach (var ev in Model)
+           {
+<div class="col-md-4 mb-4">
+<div class="card shadow-sm h-100">
+<div class="card-body">
+<h5 class="card-title text-primary">@ev.GetProperty("eventName").GetString()</h5>
+<h6 class="card-subtitle mb-2 text-muted">@ev.GetProperty("city").GetString()</h6>
+<p class="card-text">
+<strong>Date:</strong> @ev.GetProperty("eventDate").GetDateTime().ToString("dd MMM yyyy") <br />
+<strong>Type:</strong> @ev.GetProperty("eventType").GetString() <br />
+<strong>Fee:</strong> R @ev.GetProperty("entryFee").GetDecimal()
+</p>
+<a asp-action="Details" asp-route-id="@ev.GetProperty("eventID").GetInt32()" class="btn btn-success w-100">View & Enrol</a>
+</div>
+</div>
+</div>
+           }
+       }
+</div>
+</div> 

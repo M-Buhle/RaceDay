@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "8lU87jH82C0=",
+  "dgSpecHash": "Et4ke/PLPC8=",
   "success": true,
-  "projectFilePath": "c:\\Users\\Buhle Mputhi\\OneDrive - ADvTECH Ltd\\RaceDay\\RaceDayApi\\RaceDayAPI.Tests\\RaceDayAPI.Tests.csproj",
+  "projectFilePath": "C:\\Users\\Buhle Mputhi\\OneDrive - ADvTECH Ltd\\RaceDay\\RaceDayApi\\RaceDayAPI.Tests\\RaceDayAPI.Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Buhle Mputhi\\.nuget\\packages\\coverlet.collector\\6.0.4\\coverlet.collector.6.0.4.nupkg.sha512",
     "C:\\Users\\Buhle Mputhi\\.nuget\\packages\\microsoft.aspnetcore.mvc.testing\\10.0.13\\microsoft.aspnetcore.mvc.testing.10.0.13.nupkg.sha512",

@@ -81,6 +81,16 @@ namespace RaceDayAPI.Controllers
            _context.Events.Remove(ev);
            await _context.SaveChangesAsync();
            return NoContent();
+       [HttpPost("{id}/banner")]
+       public async Task<IActionResult> UploadBanner(int id, IFormFile file, [FromServices] RaceDayApi.Services.BlobService blobService)
+       {
+           if (!IsOrganiser()) return StatusCode(403, new { message = "Only organisers can upload banners" });
+           var eventItem = await _context.Events.FindAsync(id);
+           if (eventItem == null) return NotFound();
+           string url = await blobService.UploadFileAsync(file, "event-banners");
+           eventItem.BannerImageUrl = url;
+           await _context.SaveChangesAsync();
+           return Ok(new { imageUrl = url });
        }
    }
-}
+} 

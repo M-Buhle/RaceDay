@@ -16,6 +16,11 @@ builder.Services.AddSession(options =>
    options.Cookie.HttpOnly = true;
    options.Cookie.IsEssential = true;
 });
+builder.Services.AddHttpClient<RaceDayMvc.Services.RaceDayApiClient>(client =>
+{
+   client.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"] ?? "http://localhost:5000");
+});
+builder.Services.AddScoped<RaceDayApi.Services.BlobService>();
 var app = builder.Build();
 // Configure pipeline
 if (app.Environment.IsDevelopment())

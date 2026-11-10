@@ -19,3 +19,15 @@ This API is built using ASP.NET Core Web API in C#, connected to a SQL Server da
 - Passwords are hashed using **BCrypt** before being stored in the database.
 - Session management is used to track the authenticated user's ID and Role.
 - Role-based access control is enforced at the API level (e.g., only Organisers can create events).
+
+## Part 3: Docker Setup
+To run the MVC application inside a Docker container:
+1. Ensure Docker Desktop is running.
+2. Ensure the RaceDayApi is running locally on port 5000 (or update the environment variable below).
+3. Build the image:
+  `docker build -t raceday-mvc -f RaceDayMvc/Dockerfile .`
+4. Run the container:
+  `docker run -d -p 8080:8080 -e ApiSettings__BaseUrl="http://host.docker.internal:5000" --name raceday-container raceday-mvc`
+5. Open your browser to: `http://localhost:8080`
+## Video Presentation
+[Watch the Part 3 Walkthrough Here]

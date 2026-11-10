@@ -37,5 +37,7 @@ namespace RaceDayAPI.Models
        public virtual User? Organiser { get; set; }
        public virtual ICollection<Category> Categories { get; set; } = new List<Category>();
        public virtual ICollection<EventEnrolment> Enrolments { get; set; } = new List<EventEnrolment>();
+       public string? BannerImageUrl { get; set; }
+       
    }
 }

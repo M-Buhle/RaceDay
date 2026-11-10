@@ -46,6 +46,10 @@
           "framework": "net11.0",
           "targetAlias": "net11.0",
           "dependencies": {
+            "Azure.Storage.Blobs": {
+              "target": "Package",
+              "version": "[12.30.1, )"
+            },
             "BCrypt.Net-Next": {
               "target": "Package",
               "version": "[4.2.0, )"
